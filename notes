@@ -1,0 +1,49 @@
+socket.on("switch", function (data) {
+        console.log(data);
+        if (data) {
+            let holdingParam = 'DVES_4747FD_fb';
+            let switchSelect = "'cmnd/" + holdingParam + "/Power', 'toggle'";
+            console.log(switchSelect);
+            client.subscribe('homenet', function (err) {
+                if (!err) {
+                    client.publish(switchSelect);
+                }
+                else console.log(err);
+            });
+
+
+            client.publish(switchSelect, 'toggle');
+
+            //Connect & Subscribe MQTT
+function triggerLight(rlname) {
+    client.subscribe('stat/' + rlname + '/POWER', function (err) {
+        if (!err) {
+            client.publish('cmnd/' + rlname + '/Power', '', function (err) {
+                if (!err) {
+                    client.on('message', function (topic, message, packet) {
+                        console.log('light 1 is: ' + message.toString());
+                    });
+                }
+            });
+       }
+        else console.log(err);
+    });
+};
+
+function triggerLight(rlname) {
+    client.subscribe('stat/' + rlname + '/POWER', function (err) {
+        if (!err) {
+            client.publish('cmnd/' + rlname + '/Power', '', function (err) {
+                if (!err) {
+                    client.on('message', function (topic, message, packet) {
+                        console.log('light 1 is: ' + message.toString());
+                        client.unsubscribe('stat/' + lightSwitch1 + '/POWER');
+                    });
+                }
+            });
+            
+        }
+        else console.log(err);
+    });
+    
+};
